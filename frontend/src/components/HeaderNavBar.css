@@ -1,0 +1,74 @@
+/* 기본 스타일 */
+nav {
+  background-color: #2c3e50; /* 네비게이션 배경 색 */
+  padding: 1rem; /* 여백 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+
+nav ul {
+  list-style: none; /* 점 스타일 제거 */
+  margin: 0;
+  padding: 0;
+  display: flex; /* 수평 정렬 */
+  justify-content: center; /* 가운데 정렬 */
+  gap: 2rem; /* 메뉴 간격 */
+}
+
+nav li {
+  display: inline-block; /* 수평 정렬 유지 */
+}
+
+nav a {
+  text-decoration: none; /* 밑줄 제거 */
+  color: #ecf0f1; /* 링크 색상 */
+  font-size: 1.2rem; /* 폰트 크기 */
+  font-weight: 600; /* 두께 */
+  transition: color 0.3s ease; /* 색 전환 애니메이션 */
+}
+
+nav a:hover {
+  color: #f39c12; /* 호버 시 색상 변경 */
+}
+
+/* 모바일 대응 */
+@media (max-width: 600px) {
+  nav ul {
+    flex-direction: column; /* 수직 정렬 */
+    gap: 1rem; /* 간격 조정 */
+  }
+}
+
+.notice {
+  position: relative; /* 배지 위치 조정을 위한 부모 요소 기준 */
+  display: inline-block; /* 종과 배지를 함께 묶기 위해 사용 */
+}
+
+.notice img {
+  display: block; /* 이미지가 올바르게 표시되도록 설정 */
+}
+
+.notice .badge {
+  position: absolute; /* 부모 요소를 기준으로 위치 */
+  top: 0; /* 이미지의 위쪽에 배치 */
+  right: 0; /* 이미지의 오른쪽 끝에 배치 */
+  background-color: #ff3b30; /* 배지의 배경색 */
+  color: white; /* 배지 텍스트 색상 */
+  border-radius: 50%; /* 원형 배지 */
+  padding: 0.2em 0.6em; /* 배지의 크기 조정 */
+  font-size: 0.8rem; /* 배지의 텍스트 크기 */
+  font-weight: bold; /* 배지 텍스트 두께 */
+  transform: translate(50%, -50%); /* 위치 조정을 위한 이동 */
+}
+
+.login-buttons button {
+  background-color: #2c3e50; /* 네비게이션 배경 색 */
+  color: aliceblue;
+  border-radius: 5px;
+  font-size: 1.2rem; /* 폰트 크기 */
+  font-weight: 600; /* 두께 */
+  transition: color 0.3s ease; /* 색 전환 애니메이션 */
+}
+
+.login-buttons button:hover {
+  color: #f39c12; /* 호버 시 색상 변경 */
+}
