@@ -7,11 +7,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moviesns.moviesns.dto.LoginRequest;
+import com.moviesns.moviesns.dto.LoginResponse;
+import com.moviesns.moviesns.service.AuthService;
 import com.moviesns.moviesns.service.MovieService;
+
+import org.springframework.web.bind.annotation.*;
+
 
 
 @Controller
@@ -20,6 +28,10 @@ public class HomeController {
 
     @Autowired
     private MovieService mService;
+
+
+    @Autowired
+    private AuthService authService;
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -60,6 +72,16 @@ public class HomeController {
         public void serviceTest() throws Exception {
             mService.getList();
         }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        String token = authService.authenticate(loginRequest.getUserId(), loginRequest.getPassword());
+        if (token != null) {
+            return ResponseEntity.ok(new LoginResponse(token));
+        } else {
+            return ResponseEntity.status(401).body("Invalid credentials");
+        }
+    }
     
 
 }

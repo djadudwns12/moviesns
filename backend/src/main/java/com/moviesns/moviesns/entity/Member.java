@@ -17,7 +17,7 @@ public class Member {
     @Id
     private String userId;
     // 나머지 컬럼
-    private String pwd;
+    private String password;
     private String userName;
     private String phoneNum;
 

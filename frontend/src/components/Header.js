@@ -1,7 +1,10 @@
 import HeaderNavBar from "./HeaderNavBar.js";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 const Header = () => {
+  const [user, setUser] = useState(null);
+
   return (
     <>
       <Nav>
