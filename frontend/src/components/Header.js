@@ -3,7 +3,68 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 const Header = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null); // user 상태: null이면 로그아웃 상태, 객체면 로그인 상태
+
+  // 로그인 모달창
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  const [formData, setFormData] = useState({ userId: "", password: "" });
+  const [error, setError] = useState("");
+
+  const openLoginModal = () => {
+    setIsLoginModalOpen(true);
+  };
+  const closeLoginModal = () => {
+    setIsLoginModalOpen(false);
+    setFormData({ userId: "", password: "" });
+    setError("");
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    // 유효성 검사
+    if (!formData.userId || !formData.password) {
+      setError("아이디와 비밀번호를 입력해주세요.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8200/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("로그인 실패. 아이디와 비밀번호를 확인해주세요.");
+      }
+      const data = await response.json();
+      //setUser(data.user); // 서버에서 반환된 사용자 정보를 저장
+      setUser({ name: "user123" });
+      console.log(user);
+      closeLoginModal(); // 로그인 성공 시 모달 닫기
+    } catch (error) {
+      setError(error.message); // 에러 메시지 표시
+    }
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+  };
+
+  // user 상태 변경 감지
+  useEffect(() => {
+    console.log("현재 사용자 상태:", user);
+  }, [user]);
 
   return (
     <>
@@ -30,7 +91,7 @@ const Header = () => {
                 <Link to="/mypage">마이페이지</Link>
               </li>
               <li>
-                <Link to="/mypage">마이페이지</Link>
+                <Link to="/mypage1">보류페이지</Link>
               </li>
             </ul>
           </nav>
@@ -43,10 +104,46 @@ const Header = () => {
           </div>
         </Badge>
         <div className="login-buttons">
-          <button className="login-btn">로그인</button>
-          <button className="logout-btn">로그아웃</button>
+          {user ? (
+            <button className="logout-btn" onClick={() => setUser(null)}>
+              로그아웃
+            </button>
+          ) : (
+            <button className="login-btn" onClick={openLoginModal}>
+              로그인
+            </button>
+          )}
         </div>
       </Nav>
+
+      {isLoginModalOpen && (
+        <LoginModal>
+          <div className="modal-content">
+            <h2>로그인</h2>
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+            <form onSubmit={handleLogin}>
+              <input
+                type="text"
+                name="userId"
+                placeholder="아이디"
+                value={formData.username}
+                onChange={handleChange}
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="비밀번호"
+                value={formData.password}
+                onChange={handleChange}
+              />
+              <button type="submit">로그인</button>
+            </form>
+            <button className="close-btn" onClick={closeLoginModal}>
+              닫기
+            </button>
+          </div>
+        </LoginModal>
+      )}
     </>
   );
 };
@@ -66,7 +163,7 @@ const Nav = styled.nav`
   z-index: 3;
 `;
 
-const Logo = styled.a`
+const Logo = styled.div`
   padding: 0;
   width: 80px;
   margin-top: 4px;
@@ -145,6 +242,74 @@ const NavMenu = styled.div`
 
 const Badge = styled.span`
   margin-right: 20px;
+`;
+
+const LoginModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      input {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      button {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #2c3e50;
+        color: white;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #34495e;
+        }
+      }
+    }
+
+    .close-btn {
+      margin-top: 20px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: red;
+      color: white;
+      cursor: pointer;
+
+      &:hover {
+        background-color: darkred;
+      }
+    }
+  }
+`;
+const ErrorMessage = styled.p`
+  color: red;
+  margin-bottom: 10px;
 `;
 
 export default Header;

@@ -2,6 +2,7 @@ package com.moviesns.moviesns.controller;
 
 import java.util.Map;
 
+import com.moviesns.moviesns.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,17 +10,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moviesns.moviesns.dto.LoginRequest;
 import com.moviesns.moviesns.dto.LoginResponse;
-import com.moviesns.moviesns.service.AuthService;
 import com.moviesns.moviesns.service.MovieService;
-
-import org.springframework.web.bind.annotation.*;
-
 
 
 @Controller
@@ -29,9 +25,9 @@ public class HomeController {
     @Autowired
     private MovieService mService;
 
-
     @Autowired
-    private AuthService authService;
+    private MemberService memberService;
+
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -70,17 +66,33 @@ public class HomeController {
 
     @GetMapping("/serviceTest")
         public void serviceTest() throws Exception {
-            mService.getList();
-        }
+        mService.getList();
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        String token = authService.authenticate(loginRequest.getUserId(), loginRequest.getPassword());
-        if (token != null) {
+        System.out.println(loginRequest.getUserId());
+        System.out.println(loginRequest.getPassword());
+
+
+//        memberService.loadUserByUsername()
+        try {
+            // 사용자 인증
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUserId(), loginRequest.getPassword())
+            );
+
+            // 인증 성공 시 JWT 생성
+            String token = jwtTokenProvider.createToken(authentication.getName());
+
+            // 응답 반환
             return ResponseEntity.ok(new LoginResponse(token));
-        } else {
-            return ResponseEntity.status(401).body("Invalid credentials");
+        } catch (AuthenticationException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("Invalid credentials"));
         }
+
+
+        return ResponseEntity.ok(true);
     }
     
 

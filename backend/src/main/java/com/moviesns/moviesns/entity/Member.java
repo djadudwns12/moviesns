@@ -21,6 +21,8 @@ public class Member {
     private String userName;
     private String phoneNum;
 
+    private String role; // 사용자 권한 (예: "ROLE_USER", "ROLE_ADMIN")
+
 
 
 
