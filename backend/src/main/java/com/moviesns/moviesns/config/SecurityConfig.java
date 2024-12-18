@@ -38,7 +38,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login").permitAll() // 로그인 페이지는 모두 접근 가능
+                        .requestMatchers("/**").permitAll() // 로그인 페이지는 모두 접근 가능
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 );
 

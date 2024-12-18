@@ -14,9 +14,15 @@ public class MemberServiceImpl implements MemberService{
     public MemberServiceImpl (MemberRepository memberRepository){
         this.memberRepository = memberRepository;
     }
+
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Member member = memberRepository.findByUserId(userId);
+        return null;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String userId,String password) throws UsernameNotFoundException {
+        Member member = memberRepository.findByUserInfo(userId,password);
         if ( member == null) {
             throw new UsernameNotFoundException("User not found: " + userId);
         }
